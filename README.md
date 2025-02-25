@@ -1,87 +1,128 @@
-# Doctor Channelling Backend
+# Doctor Channeling Backend
 
-A Flask-based REST API for doctor channeling, allowing patients to register, book appointments, and manage doctor availability. Built with PostgreSQL for database management.
+This is a simple **Doctor Channeling Backend API** built using Flask and PostgreSQL. The API allows managing doctors and appointments.
 
 ## Features
-- Add and retrieve doctor details
-- Schedule and manage patient appointments
-- PostgreSQL as the database
-- Simple RESTful API endpoints
+- Add and retrieve doctors
+- Schedule and retrieve appointments
 
 ## Prerequisites
-Make sure you have the following installed:
-- Python (>=3.7)
-- PostgreSQL (>=12)
-- pip (Python package manager)
+Ensure you have the following installed:
+- Python 3
+- PostgreSQL
+- `pip` (Python package manager)
 
 ## Installation
 
-### Step 1: Clone the Repository
-```bash
-git clone https://github.com/your-repo/Doctor_Channelling_Backend.git
+### 1. Clone the repository
+```sh
+git clone <repository_url>
 cd Doctor_Channelling_Backend
 ```
 
-### Step 2: Set Up a Virtual Environment (Optional but Recommended)
-```bash
+### 2. Create and Activate a Virtual Environment
+```sh
 python -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
 ```
 
-### Step 3: Install Required Dependencies
-```bash
+### 3. Install Dependencies
+```sh
 pip install flask psycopg2
 ```
 
-### Step 4: Configure PostgreSQL Database
-1. Create a PostgreSQL database:
-   ```sql
-   CREATE DATABASE channel_db;
-   ```
-2. Update the database credentials in `app.py`:
-   ```python
-   DB_PARAMS = {
-       'dbname': 'channel_db',
-       'user': 'postgres',
-       'password': '<put_your_password_here>',
-       'host': 'localhost',
-       'port': '5432'
-   }
-   ```
-
-### Step 5: Run the Application
-```bash
-python app.py
+### 4. Configure Database
+Create a PostgreSQL database:
+```sql
+CREATE DATABASE channel_db;
+```
+Update database credentials in the `DB_PARAMS` dictionary inside `app.py`:
+```python
+DB_PARAMS = {
+    'dbname': 'channel_db',
+    'user': 'postgres',
+    'password': '<put_your_password_here>',
+    'host': 'localhost',
+    'port': '5432'
+}
 ```
 
-The application will start running on `http://0.0.0.0:5000/`.
+### 5. Run the Application
+```sh
+python app.py
+```
+The server will start at `http://127.0.0.1:5000`
 
 ## API Endpoints
 
-### 1. Get All Doctors
-**Endpoint:** `GET /doctors`
-```bash
-curl -X GET http://127.0.0.1:5000/doctors
+### 1. Add a Doctor
+**Endpoint:** `POST /doctors`
+
+**Request JSON:**
+```json
+{
+    "name": "Dr. John Doe",
+    "specialization": "Cardiologist",
+    "available_days": "Monday, Wednesday, Friday"
+}
+```
+**Response JSON:**
+```json
+{
+    "message": "Doctor added successfully",
+    "doctor_id": 1
+}
 ```
 
-### 2. Add a New Doctor
-**Endpoint:** `POST /doctors`
-```bash
-curl -X POST http://127.0.0.1:5000/doctors \
-     -H "Content-Type: application/json" \
-     -d '{"name": "Dr. John Doe", "specialization": "Cardiology", "available_days": "Monday, Wednesday"}'
+### 2. Get All Doctors
+**Endpoint:** `GET /doctors`
+
+**Response JSON:**
+```json
+[
+    {
+        "id": 1,
+        "name": "Dr. John Doe",
+        "specialization": "Cardiologist",
+        "available_days": "Monday, Wednesday, Friday"
+    }
+]
 ```
 
 ### 3. Schedule an Appointment
 **Endpoint:** `POST /appointments`
-```bash
-curl -X POST http://127.0.0.1:5000/appointments \
-     -H "Content-Type: application/json" \
-     -d '{"doctor_id": 1, "patient_name": "Alice Smith", "date": "2025-02-25", "time": "10:30"}'
+
+**Request JSON:**
+```json
+{
+    "doctor_id": 1,
+    "patient_name": "Alice Smith",
+    "date": "2025-03-10",
+    "time": "10:30"
+}
+```
+**Response JSON:**
+```json
+{
+    "message": "Appointment scheduled successfully",
+    "appointment_id": 1
+}
 ```
 
 ### 4. Get Appointments for a Specific Doctor
-**Endpoint:** `GET /appointments/<doctor_id>`
-```bash
-curl -X GET http://127.0.0.1:5000/appointments/1
+**Endpoint:** `GET /appointments/{doctor_id}`
+
+**Example:** `GET /appointments/1`
+
+**Response JSON:**
+```json
+[
+    {
+        "id": 1,
+        "patient_name": "Alice Smith",
+        "date": "2025-03-10",
+        "time": "10:30"
+    }
+]
 ```
+
