@@ -183,8 +183,8 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 - **Body** (raw, JSON):
   ```json
   {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
+    "name": "Shane Kanishka",
+    "email": "shane@example.com",
     "password": "password123",
     "role": "patient"
   }
