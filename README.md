@@ -90,19 +90,19 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 ### Authentication
 - **POST /signup**
   - Registers a new user.
-  - **Body**: `{"name": "John Doe", "email": "john@example.com", "password": "pass123", "role": "patient"}`
+  - **Body**: `{"name": "Shane Kanishka", "email": "shane@example.com", "password": "pass123", "role": "patient"}`
   - **Response**: `201` - `{"message": "User registered successfully", "user_id": 1}`
 
 - **POST /login**
   - Logs in a user and returns a JWT token.
-  - **Body**: `{"email": "john@example.com", "password": "pass123"}`
+  - **Body**: `{"email": "shane@example.com", "password": "pass123"}`
   - **Response**: `200` - `{"token": "jwt_token_here", "role": "patient"}`
 
 ### Appointments (Requires Token)
 - **GET /appointments**
   - Lists all appointments.
   - **Header**: `Authorization: Bearer <token>`
-  - **Response**: `200` - `{"appointments": [[1, 1, "John Doe", 1, "2025-03-04", "10:00"]]}`
+  - **Response**: `200` - `{"appointments": [[1, 1, "Shane Kanishka", 1, "2025-03-04", "10:00"]]}`
 
 - **GET /appointments/<id>**
   - Gets one appointment by ID.
@@ -112,13 +112,13 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 - **POST /appointments** (Admin Only)
   - Creates a new appointment.
   - **Header**: `Authorization: Bearer <token>`
-  - **Body**: `{"doctor_id": 1, "patient_name": "John Doe", "patient_id": 1, "date": "2025-03-04", "time": "10:00"}`
+  - **Body**: `{"doctor_id": 1, "patient_name": "P1", "patient_id": 1, "date": "2025-03-04", "time": "10:00"}`
   - **Response**: `201` - `{"message": "Appointment created successfully", "appointment_id": 1}`
 
 - **PUT /appointments/<id>** (Admin Only)
   - Updates an appointment.
   - **Header**: `Authorization: Bearer <token>`
-  - **Body**: `{"doctor_id": 1, "patient_name": "Jane Doe", "patient_id": 1, "date": "2025-03-05", "time": "14:00"}`
+  - **Body**: `{"doctor_id": 1, "patient_name": "P2", "patient_id": 1, "date": "2025-03-05", "time": "14:00"}`
   - **Response**: `200` - `{"message": "Appointment updated successfully"}`
 
 - **DELETE /appointments/<id>** (Admin Only)
@@ -153,7 +153,7 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 - **GET /patients**
   - Lists all patients.
   - **Header**: `Authorization: Bearer <token>`
-  - **Response**: `200` - `{"patients": [[1, "John Doe", "john@example.com", "hashed_password", "patient"]]}`
+  - **Response**: `200` - `{"patients": [[1, "Shane Kanishka", "shane@example.com", "hashed_password", "patient"]]}`
 
 - **DELETE /patients/<id>** (Admin Only)
   - Deletes a patient.
@@ -199,7 +199,7 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 - **Body** (raw, JSON):
   ```json
   {
-    "email": "john.doe@example.com",
+    "email": "shane@example.com",
     "password": "password123"
   }
   ```
@@ -231,7 +231,7 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
   ```json
   {
     "doctor_id": 1,
-    "patient_name": "John Doe",
+    "patient_name": "P1",
     "patient_id": 1,
     "date": "2025-03-04",
     "time": "10:00"
@@ -250,7 +250,7 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
   ```json
   {
     "doctor_id": 1,
-    "patient_name": "Jane Doe",
+    "patient_name": "P2",
     "patient_id": 1,
     "date": "2025-03-05",
     "time": "14:00"
