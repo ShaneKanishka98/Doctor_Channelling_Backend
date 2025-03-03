@@ -28,6 +28,7 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 ### Prerequisites
 - Python 3.8 or higher.
 - PostgreSQL installed and running.
+- Postman (for testing the API).
 - Git (to clone the project, optional).
 
 ### Installation
@@ -161,20 +162,118 @@ This is a simple RESTful API built with Flask to manage a healthcare system. It 
 
 ---
 
-## Testing the API
-1. Use **Postman** or **curl** to test endpoints.
-2. **Steps**:
-   - Register a user (`/signup`).
-   - Log in (`/login`) to get a token.
-   - Add the token to the `Authorization` header as `Bearer <token>` for protected routes.
-3. **Example with curl**:
-   ```bash
-   curl -X POST http://localhost:5000/signup -H "Content-Type: application/json" -d '{"name":"John Doe","email":"john@example.com","password":"pass123","role":"patient"}'
-   ```
+## Testing with Postman
+
+### Postman Setup
+1. **Install Postman**: Download and install from [postman.com](https://www.postman.com/).
+2. **Set Base URL**: Use `http://localhost:5000` as the base URL.
+3. **Create an Environment**:
+   - In Postman, click "Environments" > "Add".
+   - Name it (e.g., "Healthcare API").
+   - Add variables:
+     - `base_url`: `http://localhost:5000`
+     - `token`: Leave blank (will be set after login).
+
+### Test Cases
+
+#### 1. User Registration (`/signup`)
+- **Method**: POST
+- **URL**: `{{base_url}}/signup`
+- **Headers**: `Content-Type: application/json`
+- **Body** (raw, JSON):
+  ```json
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "role": "patient"
+  }
+  ```
+- **Expected**: `201` - `{"message": "User registered successfully", "user_id": 1}`
+- **Test**: Duplicate email should return `400`.
+
+#### 2. User Login (`/login`)
+- **Method**: POST
+- **URL**: `{{base_url}}/login`
+- **Headers**: `Content-Type: application/json`
+- **Body** (raw, JSON):
+  ```json
+  {
+    "email": "john.doe@example.com",
+    "password": "password123"
+  }
+  ```
+- **Tests Script** (in Postman’s "Tests" tab):
+  ```javascript
+  pm.test("Login successful", function () {
+      pm.response.to.have.status(200);
+      const response = pm.response.json();
+      pm.environment.set("token", response.token);
+  });
+  ```
+- **Expected**: `200` - `{"token": "jwt_token_here", "role": "patient"}`
+- **Test**: Invalid credentials should return `401`.
+
+#### 3. Get All Appointments (`/appointments`)
+- **Method**: GET
+- **URL**: `{{base_url}}/appointments`
+- **Headers**: `Authorization: Bearer {{token}}`
+- **Expected**: `200` - `{"appointments": [...]}` or `404` if empty.
+- **Test**: No token should return `401`.
+
+#### 4. Create Appointment (`/appointments`) - Admin Only
+- **Method**: POST
+- **URL**: `{{base_url}}/appointments`
+- **Headers**: 
+  - `Authorization: Bearer {{token}}`
+  - `Content-Type: application/json`
+- **Body** (raw, JSON):
+  ```json
+  {
+    "doctor_id": 1,
+    "patient_name": "John Doe",
+    "patient_id": 1,
+    "date": "2025-03-04",
+    "time": "10:00"
+  }
+  ```
+- **Expected**: `201` - `{"message": "Appointment created successfully", "appointment_id": 1}` (admin token required)
+- **Test**: Non-admin token should return `403`.
+
+#### 5. Update Appointment (`/appointments/<id>`) - Admin Only
+- **Method**: PUT
+- **URL**: `{{base_url}}/appointments/1`
+- **Headers**: 
+  - `Authorization: Bearer {{token}}`
+  - `Content-Type: application/json`
+- **Body** (raw, JSON):
+  ```json
+  {
+    "doctor_id": 1,
+    "patient_name": "Jane Doe",
+    "patient_id": 1,
+    "date": "2025-03-05",
+    "time": "14:00"
+  }
+  ```
+- **Expected**: `200` - `{"message": "Appointment updated successfully"}`
+- **Test**: Non-admin token should return `403`.
+
+#### 6. Delete Doctor (`/doctors/<id>`) - Admin Only
+- **Method**: DELETE
+- **URL**: `{{base_url}}/doctors/1`
+- **Headers**: `Authorization: Bearer {{token}}`
+- **Expected**: `200` - `{"message": "Doctor deleted successfully"}`
+- **Test**: Non-admin token should return `403`.
+
+### Notes
+- Register an admin user (`role: "admin"`) to test admin-only endpoints.
+- Save requests in a Postman Collection for easy reuse.
+- Test edge cases like missing fields or invalid tokens.
 
 ---
 
 ## Notes
 - **Security**: Don’t use `debug=True` in production; it exposes errors.
 - **Database**: Ensure PostgreSQL is running and credentials match your `.env` file.
-- **Admin Access**: Register an admin user (`role: "admin"`) to manage appointments, doctors, and patients.
+- **Admin Access**: Register an admin user to manage appointments, doctors, and patients.
